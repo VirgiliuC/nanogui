@@ -39,6 +39,10 @@ public:
     const Widget *parent() const { return mParent; }
     /// Set the parent widget
     void setParent(Widget *parent) { mParent = parent; }
+     /// Return the screen
+    Widget *screen();
+    /// Return the parent widget
+    const Widget *screen() const ;
 
     /// Return the used \ref Layout generator
     Layout *layout() { return mLayout; }
@@ -118,6 +122,14 @@ public:
         }
         return visible;
     }
+    /// Query the status of 'show border'
+    bool showBorder() const {return mShowBorder;}
+    /// Turn on of off the border around this widget
+    void setShowBorder(bool show) {mShowBorder = show;}
+    /// Set the color of the border
+    void setBorderColor(Color bdrcol) {mBorderColor = bdrcol;}
+    /// Get the color of the border
+    Color borderColor() const {return mBorderColor;}
 
     /// Return the number of child widgets
     int childCount() const { return (int) mChildren.size(); }
@@ -143,6 +155,9 @@ public:
 
     /// Remove a child widget by value
     void removeChild(const Widget *widget);
+
+    /// Remove all the children
+    void removeAllChildren();
 
     /// Retrieves the child at the specific position
     const Widget* childAt(int index) const { return mChildren[index]; }
@@ -255,6 +270,8 @@ protected:
     std::vector<Widget *> mChildren;
     bool mVisible, mEnabled;
     bool mFocused, mMouseFocus;
+    bool mShowBorder;
+    Color mBorderColor;
     std::string mTooltip;
     int mFontSize;
     Cursor mCursor;

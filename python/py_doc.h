@@ -2291,6 +2291,8 @@ a layout generator (see Layout).)doc";
 
 static const char *__doc_nanogui_Widget_Widget = R"doc(Construct a new widget with the given parent widget)doc";
 
+static const char *__doc_nanogui_Widget_screen = R"doc(Return the screen)doc";
+
 static const char *__doc_nanogui_Widget_absolutePosition = R"doc(Return the absolute position on screen)doc";
 
 static const char *__doc_nanogui_Widget_add = R"doc(Variadic shorthand notation to construct and add a child widget)doc";
@@ -2416,6 +2418,8 @@ static const char *__doc_nanogui_Widget_removeChild = R"doc(Remove a child widge
 
 static const char *__doc_nanogui_Widget_removeChild_2 = R"doc(Remove a child widget by value)doc";
 
+static const char *__doc_nanogui_Widget_removeAllChildren = R"doc(Remove all the children)doc";
+
 static const char *__doc_nanogui_Widget_requestFocus = R"doc(Request the focus to be moved to this widget)doc";
 
 static const char *__doc_nanogui_Widget_save = R"doc(Save the state of the widget into the given Serializer instance)doc";
@@ -2482,6 +2486,14 @@ parents are visible))doc";
 static const char *__doc_nanogui_Widget_visibleRecursive =
 R"doc(Check if this widget is currently visible, taking parent widgets into
 account)doc";
+
+static const char *__doc_nanogui_Widget_showBorder = R"doc(Query the status of 'show border')doc";
+
+static const char *__doc_nanogui_Widget_setShowBorder = R"doc(Turn on of off the border around this widget)doc";
+
+static const char *__doc_nanogui_Widget_setBorderColor = R"doc(Set the color of the border)doc";
+
+static const char *__doc_nanogui_Widget_borderColor = R"doc(Get the color of the border)doc";
 
 static const char *__doc_nanogui_Widget_width = R"doc(Return the width of the widget)doc";
 

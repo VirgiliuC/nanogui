@@ -23,7 +23,9 @@ Widget::Widget(Widget *parent)
     : mParent(nullptr), mTheme(nullptr), mLayout(nullptr),
       mPos(Vector2i::Zero()), mSize(Vector2i::Zero()),
       mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
-      mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
+      mFocused(false), mMouseFocus(false),
+      mShowBorder(false), mBorderColor(Color(100,100,100,255)),
+      mTooltip(""), mFontSize(-1.0f),
       mCursor(Cursor::Arrow) {
     if (parent)
         parent->addChild(this);
@@ -36,6 +38,25 @@ Widget::~Widget() {
     }
 }
 
+Widget* Widget::screen(){
+    Screen *the_screen = dynamic_cast<Screen *>(this);
+    if(the_screen)
+        return the_screen;
+    else
+    if(parent())
+        return parent()->screen();
+    return nullptr;
+}
+
+const Widget* Widget::screen() const{
+    const Screen *this_screen = dynamic_cast<const Screen *>(this);
+    if(this_screen)
+        return this_screen;
+    else
+    if(parent())
+        return parent()->screen();
+    return nullptr;//no screen found
+}
 void Widget::setTheme(Theme *theme) {
     if (mTheme.get() == theme)
         return;
@@ -162,6 +183,12 @@ void Widget::removeChild(int index) {
     widget->decRef();
 }
 
+void Widget::removeAllChildren() {
+    while(mChildren.empty() == false){
+        removeChild(mChildren[0]);
+    }
+}
+
 int Widget::childIndex(Widget *widget) const {
     auto it = std::find(mChildren.begin(), mChildren.end(), widget);
     if (it == mChildren.end())
@@ -190,27 +217,34 @@ void Widget::requestFocus() {
 }
 
 void Widget::draw(NVGcontext *ctx) {
-    #if NANOGUI_SHOW_WIDGET_BOUNDS
+     if (mShowBorder == true) {
         nvgStrokeWidth(ctx, 1.0f);
         nvgBeginPath(ctx);
         nvgRect(ctx, mPos.x() - 0.5f, mPos.y() - 0.5f, mSize.x() + 1, mSize.y() + 1);
-        nvgStrokeColor(ctx, nvgRGBA(255, 0, 0, 255));
+        nvgStrokeColor(ctx, mBorderColor);
         nvgStroke(ctx);
-    #endif
+    }
 
     if (mChildren.empty())
         return;
 
     nvgSave(ctx);
+    nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y());
+
     nvgTranslate(ctx, mPos.x(), mPos.y());
-    for (auto child : mChildren) {
-        if (child->visible()) {
-            nvgSave(ctx);
-            nvgScissor(ctx, child->mPos.x(), child->mPos.y(), child->mSize.x(), child->mSize.y());
+    //clip to parent borders all the kids
+    for (auto child : mChildren)
+        if (child->visible())
             child->draw(ctx);
-            nvgRestore(ctx);
-        }
-    }
+//    nvgTranslate(ctx, mPos.x(), mPos.y());
+//    for (auto child : mChildren) {
+//        if (child->visible()) {
+//            nvgSave(ctx);
+//            nvgScissor(ctx, child->mPos.x(), child->mPos.y(), child->mSize.x(), child->mSize.y());
+//            child->draw(ctx);
+//            nvgRestore(ctx);
+//        }
+//    }
     nvgRestore(ctx);
 }
 
@@ -222,6 +256,8 @@ void Widget::save(Serializer &s) const {
     s.set("enabled", mEnabled);
     s.set("focused", mFocused);
     s.set("tooltip", mTooltip);
+    s.set("showBorder", mShowBorder);
+    s.set("borderColor", mBorderColor);
     s.set("fontSize", mFontSize);
     s.set("cursor", (int) mCursor);
 }
@@ -234,6 +270,8 @@ bool Widget::load(Serializer &s) {
     if (!s.get("enabled", mEnabled)) return false;
     if (!s.get("focused", mFocused)) return false;
     if (!s.get("tooltip", mTooltip)) return false;
+    if (!s.get("showBorder", mShowBorder)) return false;
+    if (!s.get("borderColor", mBorderColor)) return false;
     if (!s.get("fontSize", mFontSize)) return false;
     if (!s.get("cursor", mCursor)) return false;
     return true;
