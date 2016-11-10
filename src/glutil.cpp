@@ -14,6 +14,10 @@
 #include <fstream>
 #include <Eigen/Geometry>
 
+#if defined(_WIN32) && defined(__GNUC__)
+#   include <malloc.h> //for 'alloca' in Win32 with MinGW GCC
+#endif // defined
+
 NAMESPACE_BEGIN(nanogui)
 
 static GLuint createShader_helper(GLint type, const std::string &name,
