@@ -44,6 +44,10 @@ public:
 
     /// Center the window in the current \ref Screen
     void center();
+    ///Maximizes the window to the screen size during layout
+    void setMaximized(bool maximize) {mMaximized = maximize;};
+    /// Returns true if the window is maximized
+    bool maximized() const {return mMaximized;}
 
     /// Draw the window
     virtual void draw(NVGcontext *ctx) override;
@@ -67,6 +71,7 @@ protected:
     Widget *mButtonPanel;
     bool mModal;
     bool mDrag;
+    bool mMaximized;
 };
 
 NAMESPACE_END(nanogui)
