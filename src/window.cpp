@@ -19,11 +19,16 @@
 NAMESPACE_BEGIN(nanogui)
 
 Window::Window(Widget *parent, const std::string &title)
-    : Widget(parent), mTitle(title), mButtonPanel(nullptr), mModal(false), mDrag(false) { }
+    : Widget(parent), mTitle(title), mButtonPanel(nullptr),
+      mModal(false), mDrag(false), mMaximized(false) { }
 
 Vector2i Window::preferredSize(NVGcontext *ctx) const {
     if (mButtonPanel)
         mButtonPanel->setVisible(false);
+
+    if(maximized() and parent())
+        return parent()->size();
+
     Vector2i result = Widget::preferredSize(ctx);
     if (mButtonPanel)
         mButtonPanel->setVisible(true);
@@ -47,6 +52,8 @@ Widget *Window::buttonPanel() {
 }
 
 void Window::performLayout(NVGcontext *ctx) {
+    if(maximized() and parent())
+        mFixedSize =  parent()->size();
     if (!mButtonPanel) {
         Widget::performLayout(ctx);
     } else {
@@ -113,6 +120,7 @@ void Window::draw(NVGcontext *ctx) {
         nvgSave(ctx);
         nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), 0.5f);
         nvgStroke(ctx);
+//        nvgResetScissor(ctx);//???
         nvgRestore(ctx);
 
         nvgBeginPath(ctx);
@@ -189,12 +197,14 @@ void Window::save(Serializer &s) const {
     Widget::save(s);
     s.set("title", mTitle);
     s.set("modal", mModal);
+    s.set("maximized", mMaximized);
 }
 
 bool Window::load(Serializer &s) {
     if (!Widget::load(s)) return false;
     if (!s.get("title", mTitle)) return false;
     if (!s.get("modal", mModal)) return false;
+    if (!s.get("maximized", mMaximized)) return false;
     mDrag = false;
     return true;
 }
