@@ -229,22 +229,15 @@ void Widget::draw(NVGcontext *ctx) {
         return;
 
     nvgSave(ctx);
-    nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y());
-
     nvgTranslate(ctx, mPos.x(), mPos.y());
-    //clip to parent borders all the kids
-    for (auto child : mChildren)
-        if (child->visible())
+    for (auto child : mChildren) {
+        if (child->visible()) {
+            nvgSave(ctx);
+            nvgIntersectScissor(ctx, child->mPos.x(), child->mPos.y(), child->mSize.x(), child->mSize.y());
             child->draw(ctx);
-//    nvgTranslate(ctx, mPos.x(), mPos.y());
-//    for (auto child : mChildren) {
-//        if (child->visible()) {
-//            nvgSave(ctx);
-//            nvgScissor(ctx, child->mPos.x(), child->mPos.y(), child->mSize.x(), child->mSize.y());
-//            child->draw(ctx);
-//            nvgRestore(ctx);
-//        }
-//    }
+            nvgRestore(ctx);
+        }
+    }
     nvgRestore(ctx);
 }
 
