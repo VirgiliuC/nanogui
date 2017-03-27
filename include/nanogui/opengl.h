@@ -14,7 +14,7 @@
 #pragma once
 
 #include <nanogui/common.h>
-
+#define NANOGUI_GLAD
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if defined(NANOGUI_GLAD)
     #if defined(NANOGUI_SHARED) && !defined(GLAD_GLAPI_EXPORT)

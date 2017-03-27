@@ -69,7 +69,7 @@ private:
 template <typename T> class ref {
 public:
     /// Create a ``nullptr``-valued reference
-    ref() { }
+    ref() :m_ptr(nullptr) { }
 
     /// Construct a reference from a pointer
     ref(T *ptr) : m_ptr(ptr) {

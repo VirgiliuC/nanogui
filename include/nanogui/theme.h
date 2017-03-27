@@ -68,6 +68,12 @@ public:
     Color mButtonGradientTopPushed;
     Color mButtonGradientBotPushed;
 
+    /* Selectable choice item colors (e.g. lists, trees)*/
+    Color mChoiceGradientTopSelected;
+    Color mChoiceGradientBotSelected;
+    Color mChoiceGradientTopHovered;
+    Color mChoiceGradientBotHovered;
+
     /* Window colors */
     Color mWindowFillUnfocused;
     Color mWindowFillFocused;
@@ -81,6 +87,8 @@ public:
 
     Color mWindowPopup;
     Color mWindowPopupTransparent;
+
+
 protected:
     virtual ~Theme() { };
 };

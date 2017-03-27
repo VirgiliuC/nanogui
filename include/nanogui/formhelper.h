@@ -21,6 +21,7 @@
 #include <nanogui/colorpicker.h>
 #include <nanogui/layout.h>
 #include <cassert>
+#include <iostream>
 
 NAMESPACE_BEGIN(nanogui)
 
@@ -122,25 +123,39 @@ NAMESPACE_END(detail)
 class FormHelper {
 public:
     /// Create a helper class to construct NanoGUI widgets on the given screen
-    FormHelper(Screen *screen) : mScreen(screen) { }
+//    FormHelper(Screen *screen) : mScreen(screen) { }
 
     /// Add a new top-level window
-    Window *addWindow(const Vector2i &pos,
-                         const std::string &title = "Untitled") {
-        assert(mScreen);
-        mWindow = new Window(mScreen, title);
+//    Window *addWindow(const Vector2i &pos,
+//                         const std::string &title = "Untitled") {
+//        assert(mScreen);
+//        mWindow = new Window(mScreen, title);
+//        mLayout = new AdvancedGridLayout({10, 0, 10, 0}, {});
+//        mLayout->setMargin(10);
+//        mLayout->setColStretch(2, 1);
+//        mWindow->setPosition(pos);
+//        mWindow->setLayout(mLayout);
+//        mWindow->setVisible(true);
+//        return mWindow;
+//    }
+    FormHelper():mLayout(nullptr){};
+
+     /// Add a new top-level window
+    Widget *addHostPane(Widget* parent) {
+        assert(parent);
+        mHostPane = new Widget(parent);
+        std::cout << mLayout << std::endl;
         mLayout = new AdvancedGridLayout({10, 0, 10, 0}, {});
         mLayout->setMargin(10);
-        mLayout->setColStretch(2, 1);
-        mWindow->setPosition(pos);
-        mWindow->setLayout(mLayout);
-        mWindow->setVisible(true);
-        return mWindow;
+        mLayout->setColStretch(2, 2);
+        mHostPane->setLayout(mLayout);
+        mHostPane->setVisible(true);
+        return mHostPane;
     }
 
     /// Add a new group that may contain several sub-widgets
     Label *addGroup(const std::string &caption) {
-        Label* label = new Label(mWindow, caption, mGroupFontName, mGroupFontSize);
+        Label* label = new Label(mHostPane, caption, mGroupFontName, mGroupFontSize);
         if (mLayout->rowCount() > 0)
             mLayout->appendRow(mPreGroupSpacing); /* Spacing */
         mLayout->appendRow(0);
@@ -153,8 +168,8 @@ public:
     template <typename Type> detail::FormWidget<Type> *
     addVariable(const std::string &label, const std::function<void(Type)> &setter,
                 const std::function<Type()> &getter, bool editable = true) {
-        Label *labelW = new Label(mWindow, label, mLabelFontName, mLabelFontSize);
-        auto widget = new detail::FormWidget<Type>(mWindow);
+        Label *labelW = new Label(mHostPane, label, mLabelFontName, mLabelFontSize);
+        auto widget = new detail::FormWidget<Type>(mHostPane);
         auto refresh = [widget, getter] {
             Type value = getter(), current = widget->value();
             if (value != current)
@@ -188,7 +203,7 @@ public:
 
     /// Add a button with a custom callback
     Button *addButton(const std::string &label, const std::function<void()> &cb) {
-        Button *button = new Button(mWindow, label);
+        Button *button = new Button(mHostPane, label);
         button->setCallback(cb);
         button->setFixedHeight(25);
         if (mLayout->rowCount() > 0)
@@ -204,7 +219,7 @@ public:
         if (label == "") {
             mLayout->setAnchor(widget, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1, 3, 1));
         } else {
-            Label *labelW = new Label(mWindow, label, mLabelFontName, mLabelFontSize);
+            Label *labelW = new Label(mHostPane, label, mLabelFontName, mLabelFontSize);
             mLayout->setAnchor(labelW, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1));
             mLayout->setAnchor(widget, AdvancedGridLayout::Anchor(3, mLayout->rowCount()-1));
         }
@@ -217,13 +232,14 @@ public:
     }
 
     /// Access the currently active \ref Window instance
-    Window *window() { return mWindow; }
-    void setWindow(Window *window) {
-        mWindow = window;
-        mLayout = dynamic_cast<AdvancedGridLayout *>(window->layout());
+    Widget *hostPane() { return mHostPane; }
+
+    void setHostPane(Widget *host_pane) {
+        mLayout = dynamic_cast<AdvancedGridLayout *>(host_pane->layout());
         if (mLayout == nullptr)
             throw std::runtime_error(
                 "Internal error: window has an incompatible layout!");
+        mHostPane = host_pane;
     }
 
     /// Specify a fixed size for newly added widgets
@@ -243,9 +259,10 @@ public:
     void setWidgetFontSize(int value) { mWidgetFontSize = value; }
 
 protected:
-    ref<Screen> mScreen;
+//    ref<Screen> mScreen;
     ref<Window> mWindow;
-    ref<AdvancedGridLayout> mLayout;
+    Widget* mHostPane;
+    AdvancedGridLayout* mLayout;
     std::vector<std::function<void()>> mRefreshCallbacks;
     std::string mGroupFontName = "sans-bold";
     std::string mLabelFontName = "sans";

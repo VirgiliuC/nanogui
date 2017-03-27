@@ -79,6 +79,7 @@ public:
 
     virtual void save(Serializer &s) const override;
     virtual bool load(Serializer &s) override;
+
 protected:
     std::string mCaption;
     int mIcon;

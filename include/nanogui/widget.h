@@ -160,10 +160,10 @@ public:
     void removeAllChildren();
 
     /// Retrieves the child at the specific position
-    const Widget* childAt(int index) const { return mChildren[index]; }
+    const Widget* childAt(int index) const { return index >= mChildren.size() ? nullptr: mChildren[index]; }
 
     /// Retrieves the child at the specific position
-    Widget* childAt(int index) { return mChildren[index]; }
+    Widget* childAt(int index) { return index >= mChildren.size() ? nullptr: mChildren[index]; }
 
     /// Returns the index of a specific child or -1 if not found
     int childIndex(Widget* widget) const;
@@ -173,7 +173,6 @@ public:
     WidgetClass* add(const Args&... args) {
         return new WidgetClass(this, args...);
     }
-
     /// Walk up the hierarchy and return the parent window
     Window *window();
 

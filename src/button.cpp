@@ -20,19 +20,19 @@ Button::Button(Widget *parent, const std::string &caption, int icon)
     : Widget(parent), mCaption(caption), mIcon(icon),
       mIconPosition(IconPosition::LeftCentered), mPushed(false),
       mFlags(NormalButton), mBackgroundColor(Color(0, 0)),
-      mTextColor(Color(0, 0)) { }
+      mTextColor(Color(0, 0)) {setId("Button"); }
 
 Vector2i Button::preferredSize(NVGcontext *ctx) const {
     int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
     nvgFontSize(ctx, fontSize);
-    nvgFontFace(ctx, "sans-bold");
+    nvgFontFaceId(ctx, mTheme->mFontNormal);
     float tw = nvgTextBounds(ctx, 0,0, mCaption.c_str(), nullptr, nullptr);
     float iw = 0.0f, ih = fontSize;
 
     if (mIcon) {
         if (nvgIsFontIcon(mIcon)) {
             ih *= 1.5f;
-            nvgFontFace(ctx, "icons");
+            nvgFontFaceId(ctx, mTheme->mFontIcons);
             nvgFontSize(ctx, ih);
             iw = nvgTextBounds(ctx, 0, 0, utf8(mIcon).data(), nullptr, nullptr)
                 + mSize.y() * 0.15f;
@@ -116,7 +116,7 @@ void Button::draw(NVGcontext *ctx) {
         gradTop = mTheme->mButtonGradientTopFocused;
         gradBot = mTheme->mButtonGradientBotFocused;
     }
-
+    //draw the background
     nvgBeginPath(ctx);
 
     nvgRoundedRect(ctx, mPos.x() + 1, mPos.y() + 1.0f, mSize.x() - 2,
@@ -138,14 +138,14 @@ void Button::draw(NVGcontext *ctx) {
 
     nvgFillPaint(ctx, bg);
     nvgFill(ctx);
-
+    //draw the light border
     nvgBeginPath(ctx);
     nvgStrokeWidth(ctx, 1.0f);
     nvgRoundedRect(ctx, mPos.x() + 0.5f, mPos.y() + (mPushed ? 0.5f : 1.5f), mSize.x() - 1,
                    mSize.y() - 1 - (mPushed ? 0.0f : 1.0f), mTheme->mButtonCornerRadius);
     nvgStrokeColor(ctx, mTheme->mBorderLight);
     nvgStroke(ctx);
-
+    //draw the dark border
     nvgBeginPath(ctx);
     nvgRoundedRect(ctx, mPos.x() + 0.5f, mPos.y() + 0.5f, mSize.x() - 1,
                    mSize.y() - 2, mTheme->mButtonCornerRadius);
@@ -154,7 +154,7 @@ void Button::draw(NVGcontext *ctx) {
 
     int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
     nvgFontSize(ctx, fontSize);
-    nvgFontFace(ctx, "sans-bold");
+    nvgFontFaceId(ctx, mTheme->mFontNormal);
     float tw = nvgTextBounds(ctx, 0,0, mCaption.c_str(), nullptr, nullptr);
 
     Vector2f center = mPos.cast<float>() + mSize.cast<float>() * 0.5f;
@@ -163,7 +163,7 @@ void Button::draw(NVGcontext *ctx) {
         mTextColor.w() == 0 ? mTheme->mTextColor : mTextColor;
     if (!mEnabled)
         textColor = mTheme->mDisabledTextColor;
-
+    //draw the icon, if any
     if (mIcon) {
         auto icon = utf8(mIcon);
 
@@ -171,7 +171,7 @@ void Button::draw(NVGcontext *ctx) {
         if (nvgIsFontIcon(mIcon)) {
             ih *= 1.5f;
             nvgFontSize(ctx, ih);
-            nvgFontFace(ctx, "icons");
+            nvgFontFaceId(ctx, mTheme->mFontIcons);
             iw = nvgTextBounds(ctx, 0, 0, icon.data(), nullptr, nullptr);
         } else {
             int w, h;
@@ -208,9 +208,9 @@ void Button::draw(NVGcontext *ctx) {
             nvgFill(ctx);
         }
     }
-
+    //draw the label
     nvgFontSize(ctx, fontSize);
-    nvgFontFace(ctx, "sans-bold");
+    nvgFontFaceId(ctx, mTheme->mFontNormal);
     nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
     nvgFillColor(ctx, mTheme->mTextColorShadow);
     nvgText(ctx, textPos.x(), textPos.y(), mCaption.c_str(), nullptr);

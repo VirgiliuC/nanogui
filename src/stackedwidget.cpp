@@ -17,7 +17,7 @@
 NAMESPACE_BEGIN(nanogui)
 
 StackedWidget::StackedWidget(nanogui::Widget *parent)
-    : Widget(parent) { }
+    : Widget(parent) { setId("StackedWidget"); }
 
 void StackedWidget::setSelectedIndex(int index) {
     assert(index < childCount());

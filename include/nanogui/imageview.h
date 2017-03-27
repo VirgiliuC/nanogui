@@ -31,6 +31,7 @@ public:
     ~ImageView();
 
     void bindImage(GLuint imageId);
+    GLuint imageID() const {return mImageID;}
 
     GLShader& imageShader() { return mShader; }
 

@@ -46,10 +46,13 @@ TextBox::TextBox(Widget *parent,const std::string &value)
       mTextOffset(0),
       mLastClick(0) {
     if (mTheme) mFontSize = mTheme->mTextBoxFontSize;
+    setId("TextBox");
 }
 
 void TextBox::setEditable(bool editable) {
     mEditable = editable;
+    if(editable == false)
+        mSpinnable = false;
     setCursor(editable ? Cursor::IBeam : Cursor::Arrow);
 }
 

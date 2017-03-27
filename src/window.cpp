@@ -20,7 +20,7 @@ NAMESPACE_BEGIN(nanogui)
 
 Window::Window(Widget *parent, const std::string &title)
     : Widget(parent), mTitle(title), mButtonPanel(nullptr),
-      mModal(false), mDrag(false), mMaximized(false) { }
+      mModal(false), mDrag(false), mMaximized(false) { setId("Window");}
 
 Vector2i Window::preferredSize(NVGcontext *ctx) const {
     if (mButtonPanel)
@@ -120,7 +120,6 @@ void Window::draw(NVGcontext *ctx) {
         nvgSave(ctx);
         nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), 0.5f);
         nvgStroke(ctx);
-//        nvgResetScissor(ctx);//???
         nvgRestore(ctx);
 
         nvgBeginPath(ctx);

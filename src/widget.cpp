@@ -29,6 +29,7 @@ Widget::Widget(Widget *parent)
       mCursor(Cursor::Arrow) {
     if (parent)
         parent->addChild(this);
+    setId("Widget");
 }
 
 Widget::~Widget() {
@@ -117,7 +118,7 @@ bool Widget::mouseMotionEvent(const Vector2i &p, const Vector2i &rel, int button
         Widget *child = *it;
         if (!child->visible())
             continue;
-        bool contained = child->contains(p - mPos), prevContained = child->contains(p - mPos - rel);
+        bool contained = child->contains(p - mPos), prevContained = child->mMouseFocus;//???child->contains(p - mPos - rel);
         if (contained != prevContained)
             child->mouseEnterEvent(p, contained);
         if ((contained || prevContained) &&
@@ -173,12 +174,19 @@ void Widget::addChild(Widget * widget) {
 }
 
 void Widget::removeChild(const Widget *widget) {
-    mChildren.erase(std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end());
-    widget->decRef();
+     auto it = std::find(mChildren.begin(), mChildren.end(), widget);
+     if (it == mChildren.end()) {
+         return;
+     }
+     removeChild(it - mChildren.begin());//random iterator
 }
 
 void Widget::removeChild(int index) {
+    assert(index <= childCount());
     Widget *widget = mChildren[index];
+    if (widget->focused()) {
+        requestFocus();
+    }
     mChildren.erase(mChildren.begin() + index);
     widget->decRef();
 }
@@ -218,13 +226,12 @@ void Widget::requestFocus() {
 
 void Widget::draw(NVGcontext *ctx) {
      if (mShowBorder == true) {
-        nvgStrokeWidth(ctx, 1.0f);
         nvgBeginPath(ctx);
-        nvgRect(ctx, mPos.x() - 0.5f, mPos.y() - 0.5f, mSize.x() + 1, mSize.y() + 1);
+        nvgStrokeWidth(ctx, 1.0f);
+        nvgRect(ctx, mPos.x() , mPos.y(), mSize.x(), mSize.y());
         nvgStrokeColor(ctx, mBorderColor);
         nvgStroke(ctx);
     }
-
     if (mChildren.empty())
         return;
 

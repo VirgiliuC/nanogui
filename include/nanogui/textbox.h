@@ -41,7 +41,7 @@ public:
     void setEditable(bool editable);
 
     bool spinnable() const { return mSpinnable; }
-    void setSpinnable(bool spinnable) { mSpinnable = spinnable; }
+    void setSpinnable(bool spinnable) { mSpinnable = editable() ? spinnable : false; }
 
     const std::string &value() const { return mValue; }
     void setValue(const std::string &value) { mValue = value; }
@@ -160,7 +160,7 @@ public:
                 Scalar value = 0;
                 iss >> value;
                 setValue(value);
-                cb(value);
+                cb(IntBox::value());
                 return true;
             }
         );
@@ -271,7 +271,7 @@ public:
         TextBox::setCallback([cb, this](const std::string &str) {
             Scalar scalar = (Scalar) std::stod(str);
             setValue(scalar);
-            cb(scalar);
+            cb(value());
             return true;
         });
     }

@@ -94,6 +94,7 @@ Screen::Screen()
       mCursor(Cursor::Arrow), mBackground(0.3f, 0.3f, 0.32f, 1.f),
       mShutdownGLFWOnDestruct(false), mFullscreen(false) {
     memset(mCursors, 0, sizeof(GLFWcursor *) * (int) Cursor::CursorCount);
+    setId("Screen");
 }
 
 Screen::Screen(const Vector2i &size, const std::string &caption, bool resizable,
@@ -104,7 +105,7 @@ Screen::Screen(const Vector2i &size, const std::string &caption, bool resizable,
       mCursor(Cursor::Arrow), mBackground(0.3f, 0.3f, 0.32f, 1.f), mCaption(caption),
       mShutdownGLFWOnDestruct(false), mFullscreen(fullscreen) {
     memset(mCursors, 0, sizeof(GLFWcursor *) * (int) Cursor::CursorCount);
-
+    setId("Screen");
     /* Request a forward compatible OpenGL glMajor.glMinor core profile context.
        Default value is an OpenGL 3.3 core profile context. */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
@@ -385,7 +386,6 @@ void Screen::drawWidgets() {
     nvgBeginFrame(mNVGContext, mSize[0], mSize[1], mPixelRatio);
 
     draw(mNVGContext);
-
     double elapsed = glfwGetTime() - mLastInteraction;
 
     if (elapsed > 0.5f) {
@@ -440,7 +440,7 @@ void Screen::drawWidgets() {
 bool Screen::keyboardEvent(int key, int scancode, int action, int modifiers) {
     if (mFocusPath.size() > 0) {
         for (auto it = mFocusPath.rbegin() + 1; it != mFocusPath.rend(); ++it)
-            if ((*it)->focused() && (*it)->keyboardEvent(key, scancode, action, modifiers))
+            if ((*it)->focused() &&(*it)->keyboardEvent(key, scancode, action, modifiers))
                 return true;
     }
 

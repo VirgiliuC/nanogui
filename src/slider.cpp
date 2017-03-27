@@ -20,6 +20,7 @@ Slider::Slider(Widget *parent)
     : Widget(parent), mValue(0.0f), mRange(0.f, 1.f),
       mHighlightedRange(0.f, 0.f) {
     mHighlightColor = Color(255, 80, 80, 70);
+    setId("Slider");
 }
 
 Vector2i Slider::preferredSize(NVGcontext *) const {

@@ -50,8 +50,10 @@ int main(int /* argc */, char ** /* argv */) {
         }
 
         bool enabled = true;
-        FormHelper *gui = new FormHelper(screen);
-        ref<Window> window = gui->addWindow(Eigen::Vector2i(10, 10), "Form helper example");
+        ref<Window> window = new Window(screen);
+        window->setMaximized(true);
+        FormHelper *gui = new FormHelper();
+       gui->addHostPane(window);//Eigen::Vector2i(10, 10), "Form helper example");
         gui->addGroup("Basic types");
         gui->addVariable("bool", bvar);
         gui->addVariable("string", strval);

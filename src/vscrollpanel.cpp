@@ -25,7 +25,7 @@ const int knob_width = 8;
 
 VScrollPanel::VScrollPanel(Widget *parent)
     : Widget(parent), mChildPreferredHeight(0), mScroll(0.0f)
-    {    }
+    {   setId("VScrollPanel"); }
 
 
 //************ Styling ******************************/
@@ -101,9 +101,9 @@ void VScrollPanel::draw(NVGcontext *ctx) {
     nvgTranslate(ctx, mPos.x(), mPos.y());
     nvgIntersectScissor(ctx, 0, 0, mSize.x(), mSize.y());
     performLayout(ctx);
-    if (child->visible()){
-        child->draw(ctx);
-    }
+//    if (child->visible()){
+//        child->draw(ctx);
+//    }
     nvgRestore(ctx);
     //don't draw the scroller if there's nothing to scroll
     if(mChildren[0]->height() <= height())
@@ -138,6 +138,7 @@ void VScrollPanel::draw(NVGcontext *ctx) {
                    knob_height - 2, 2);
     nvgFillPaint(ctx, paint);
     nvgFill(ctx);
+    Widget::draw(ctx);
 }
 //************ Serialize ******************************/
 
@@ -155,14 +156,21 @@ bool VScrollPanel::load(Serializer &s) {
 }
 
 ////////////////////////////////////////////////////////////////////////
-
-VScrollContainer::VScrollContainer(Widget *parent)
-    : Widget(nullptr)
-{
-        mVScrollPanel = new VScrollPanel(parent);
-        mVScrollPanel->addChild(this);
-        if (parent) {
-            mTheme = parent->theme();
-        }
-}
+//
+//VScrollContainer::VScrollContainer(Widget *parent)
+//    : Widget(nullptr)
+//{
+//        mVScrollPanel = new VScrollPanel(parent);
+//        mVScrollPanel->addChild(this);
+//        if (parent) {
+//            mTheme = parent->theme();
+//        }
+//        setId("VScrollContainer");
+//}
+//
+//
+//void Widget::performLayout(NVGcontext *ctx) {
+//    mVScrollPanel->setFixedSize(size());
+//    Widget::performLayout(ctx);
+//}
 NAMESPACE_END(nanogui)

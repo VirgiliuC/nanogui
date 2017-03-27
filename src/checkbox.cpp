@@ -20,7 +20,7 @@ NAMESPACE_BEGIN(nanogui)
 CheckBox::CheckBox(Widget *parent, const std::string &caption,
                    const std::function<void(bool) > &callback)
     : Widget(parent), mCaption(caption), mPushed(false), mChecked(false),
-      mCallback(callback) { }
+      mCallback(callback) {setId("CheckBox");  }
 
 bool CheckBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
                                 int modifiers) {

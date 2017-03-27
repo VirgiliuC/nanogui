@@ -23,6 +23,7 @@ Label::Label(Widget *parent, const std::string &caption, const std::string &font
         mColor = mTheme->mTextColor;
     }
     if (fontSize >= 0) mFontSize = fontSize;
+    setId("Label");
 }
 
 void Label::setTheme(Theme *theme) {

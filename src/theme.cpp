@@ -19,7 +19,7 @@ NAMESPACE_BEGIN(nanogui)
 
 Theme::Theme(NVGcontext *ctx) {
     mStandardFontSize                 = 16;
-    mButtonFontSize                   = 20;
+    mButtonFontSize                   = 14;
     mTextBoxFontSize                  = 20;
     mWindowCornerRadius               = 2;
     mWindowHeaderHeight               = 30;
@@ -38,7 +38,7 @@ Theme::Theme(NVGcontext *ctx) {
     mBorderDark                       = Color(29, 255);
     mBorderLight                      = Color(92, 255);
     mBorderMedium                     = Color(35, 255);
-    mTextColor                        = Color(255, 160);
+    mTextColor                        = Color(255, 255);
     mDisabledTextColor                = Color(255, 80);
     mTextColorShadow                  = Color(0, 160);
     mIconColor                        = mTextColor;
@@ -47,8 +47,13 @@ Theme::Theme(NVGcontext *ctx) {
     mButtonGradientBotFocused         = Color(48, 255);
     mButtonGradientTopUnfocused       = Color(74, 255);
     mButtonGradientBotUnfocused       = Color(58, 255);
-    mButtonGradientTopPushed          = Color(41, 255);
+    mButtonGradientTopPushed          = Color(60, 255);
     mButtonGradientBotPushed          = Color(29, 255);
+
+    mChoiceGradientTopSelected        = Color(1.0f,0.75f,0.25f,0.6f);//orange
+    mChoiceGradientBotSelected        = Color(1.0f,0.59f,0.0f,0.6f);
+    mChoiceGradientTopHovered         = Color(1.0f,0.75f,0.25f,0.15f);//orange
+    mChoiceGradientBotHovered         = Color(1.0f,0.59f,0.0f,0.15f);
 
     /* Window-related */
     mWindowFillUnfocused              = Color(43, 230);
@@ -63,6 +68,7 @@ Theme::Theme(NVGcontext *ctx) {
 
     mWindowPopup                      = Color(50, 255);
     mWindowPopupTransparent           = Color(50, 0);
+
 
     mFontNormal = nvgCreateFontMem(ctx, "sans", roboto_regular_ttf,
                                    roboto_regular_ttf_size, 0);
