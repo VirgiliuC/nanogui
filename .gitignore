@@ -28,3 +28,7 @@ docs/_build
 docs/doxyoutput
 docs/generated_api
 docs/
+Doxyfile-glfw
+Doxyfile-nanogui
+include/nanogui/aui_dataviewlist.h
+src/aui_dataviewlist.cpp
