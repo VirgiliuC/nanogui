@@ -279,7 +279,7 @@ void ListBase::selectRange(int curr){
 bool ListBase::mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) {
 //    bool res = Widget::mouseButtonEvent(p, button, down, modifiers);
     //so, here is the selection mechanism:
-    if (button == GLFW_MOUSE_BUTTON_1 and down and mEnabled) {
+    if (button == GLFW_MOUSE_BUTTON_1 and down and enabledStatus()) {
         if(not mFocused)
             requestFocus();
         if(not(mFlags & Multiple) or not (GLFW_MOD_CONTROL & modifiers))
@@ -289,7 +289,7 @@ bool ListBase::mouseButtonEvent(const Vector2i &p, int button, bool down, int mo
         for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) {
             pli = dynamic_cast<ListBase::ListItemBase*>(*it);
             //do a hit test
-            if (pli->enabled() and //must be enabled
+            if (pli->enabledStatus() and //must be enabled
                 pli->visible() and //must be also visible
                 pli->contains(p - mPos)){//and must get the hit
                 //deal with multiple selections if necessary
@@ -314,6 +314,8 @@ bool ListBase::mouseButtonEvent(const Vector2i &p, int button, bool down, int mo
 
 
 bool ListBase::keyboardEvent(int key, int /*scancode*/, int action, int modifiers) {
+    if(not enabledStatus())
+        return false;
     if((key != GLFW_KEY_UP and key != GLFW_KEY_DOWN) or
         (action != GLFW_PRESS and action != GLFW_REPEAT))
         return false;//no interest

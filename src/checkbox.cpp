@@ -25,7 +25,7 @@ CheckBox::CheckBox(Widget *parent, const std::string &caption,
 bool CheckBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
                                 int modifiers) {
     Widget::mouseButtonEvent(p, button, down, modifiers);
-    if (!mEnabled)
+    if (!enabledStatus())
         return false;
 
     if (button == GLFW_MOUSE_BUTTON_1) {
@@ -61,7 +61,7 @@ void CheckBox::draw(NVGcontext *ctx) {
     nvgFontSize(ctx, fontSize());
     nvgFontFace(ctx, "sans");
     nvgFillColor(ctx,
-                 mEnabled ? mTheme->mTextColor : mTheme->mDisabledTextColor);
+                 enabledStatus() ? mTheme->mTextColor : mTheme->mDisabledTextColor);
     nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
     nvgText(ctx, mPos.x() + 1.6f * fontSize(), mPos.y() + mSize.y() * 0.5f,
             mCaption.c_str(), nullptr);
@@ -80,7 +80,7 @@ void CheckBox::draw(NVGcontext *ctx) {
     if (mChecked) {
         nvgFontSize(ctx, 1.8 * mSize.y());
         nvgFontFace(ctx, "icons");
-        nvgFillColor(ctx, mEnabled ? mTheme->mIconColor
+        nvgFillColor(ctx, enabledStatus() ? mTheme->mIconColor
                                    : mTheme->mDisabledTextColor);
         nvgTextAlign(ctx, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
         nvgText(ctx, mPos.x() + mSize.y() * 0.5f + 1,

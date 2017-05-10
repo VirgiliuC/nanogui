@@ -162,7 +162,7 @@ void ImageView::zoom(int amount, const Vector2f& focusPosition) {
 }
 
 bool ImageView::mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int /*modifiers*/) {
-    if ((button & (1 << GLFW_MOUSE_BUTTON_LEFT)) != 0 && !mFixedOffset) {
+    if (enabledStatus() and (button & (1 << GLFW_MOUSE_BUTTON_LEFT)) != 0 && !mFixedOffset) {
         setImageCoordinateAt((p + rel).cast<float>(), imageCoordinateAt(p.cast<float>()));
         return true;
     }
@@ -182,7 +182,7 @@ bool ImageView::helpersVisible() const {
 }
 
 bool ImageView::scrollEvent(const Vector2i& p, const Vector2f& rel) {
-    if (mFixedScale)
+    if (mFixedScale or not enabledStatus())
         return false;
     float v = rel.y();
     if (std::abs(v) < 1)
@@ -192,7 +192,7 @@ bool ImageView::scrollEvent(const Vector2i& p, const Vector2f& rel) {
 }
 
 bool ImageView::keyboardEvent(int key, int /*scancode*/, int action, int modifiers) {
-    if (action) {
+    if (enabledStatus() and action) {
         switch (key) {
         case GLFW_KEY_LEFT:
             if (!mFixedOffset) {
@@ -236,6 +236,8 @@ bool ImageView::keyboardEvent(int key, int /*scancode*/, int action, int modifie
 }
 
 bool ImageView::keyboardCharacterEvent(unsigned int codepoint) {
+    if(not enabledStatus())
+        return false;
     switch (codepoint) {
     case '-':
         if (!mFixedScale) {

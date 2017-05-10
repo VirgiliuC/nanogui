@@ -29,7 +29,7 @@ Vector2i Slider::preferredSize(NVGcontext *) const {
 
 bool Slider::mouseDragEvent(const Vector2i &p, const Vector2i & /* rel */,
                             int /* button */, int /* modifiers */) {
-    if (!mEnabled)
+    if (!enabledStatus())
         return false;
 
     const float kr = (int) (mSize.y() * 0.4f), kshadow = 3;
@@ -45,7 +45,7 @@ bool Slider::mouseDragEvent(const Vector2i &p, const Vector2i & /* rel */,
 }
 
 bool Slider::mouseButtonEvent(const Vector2i &p, int /* button */, bool down, int /* modifiers */) {
-    if (!mEnabled)
+    if (!enabledStatus())
         return false;
 
     const float kr = (int) (mSize.y() * 0.4f), kshadow = 3;
@@ -75,7 +75,7 @@ void Slider::draw(NVGcontext* ctx) {
 
     NVGpaint bg = nvgBoxGradient(
         ctx, startX, center.y() - 3 + 1, widthX, 6, 3, 3,
-        Color(0, mEnabled ? 32 : 10), Color(0, mEnabled ? 128 : 210));
+        Color(0, enabledStatus() ? 32 : 10), Color(0, enabledStatus() ? 128 : 210));
 
     nvgBeginPath(ctx);
     nvgRoundedRect(ctx, startX, center.y() - 3 + 1, widthX, 6, 2);
@@ -121,7 +121,7 @@ void Slider::draw(NVGcontext* ctx) {
     nvgFill(ctx);
     nvgBeginPath(ctx);
     nvgCircle(ctx, knobPos.x(), knobPos.y(), kr/2);
-    nvgFillColor(ctx, Color(150, mEnabled ? 255 : 100));
+    nvgFillColor(ctx, Color(150, enabledStatus() ? 255 : 100));
     nvgStrokePaint(ctx, knobReverse);
     nvgStroke(ctx);
     nvgFill(ctx);

@@ -159,7 +159,7 @@ private:
     bool mFixedOffset;
 
     // Fine-tuning parameters.
-    float mZoomSensitivity = 1.1f;
+    float mZoomSensitivity = 1.0f;
 
     // Image info parameters.
     float mGridThreshold = -1;

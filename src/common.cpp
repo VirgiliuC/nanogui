@@ -87,6 +87,7 @@ void mainloop(int refresh) {
                     screen->setVisible(false);
                     continue;
                 }
+                screen->enableEvent();
                 screen->drawAll();
                 numScreens++;
             }

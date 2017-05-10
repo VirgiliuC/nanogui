@@ -181,10 +181,14 @@ public:
     /// Return the ID value associated with this widget, if any
     const std::string &id() const { return mId; }
 
-    /// Return whether or not this widget is currently enabled
+    /// Return the enabled status of this widget, accounting for its hierarchy
+    bool enabledStatus() const { return (parent()? parent()->enabledStatus() : true) and mEnabled; }
+    /// Return whether or not this widget is intrinsically enabled
     bool enabled() const { return mEnabled; }
     /// Set whether or not this widget is currently enabled
     void setEnabled(bool enabled) { mEnabled = enabled; }
+    ///Sets a callback to determine the dynamic enabled status
+    void setEnableCallback(std::function<bool(bool)>&callback) { mEnableCallback = callback; }
 
     /// Return whether or not this widget is currently focused
     bool focused() const { return mFocused; }
@@ -235,6 +239,9 @@ public:
     /// Handle a focus change event (default implementation: record the focus status, but do nothing)
     virtual bool focusEvent(bool focused);
 
+    /// Handle a enable polling event (default implementation: propagate to children)
+    virtual bool enableEvent();
+
     /// Handle a keyboard event (default implementation: do nothing)
     virtual bool keyboardEvent(int key, int scancode, int action, int modifiers);
 
@@ -267,6 +274,7 @@ protected:
     std::string mId;
     Vector2i mPos, mSize, mFixedSize;
     std::vector<Widget *> mChildren;
+    std::function<bool(bool)> mEnableCallback;
     bool mVisible, mEnabled;
     bool mFocused, mMouseFocus;
     bool mShowBorder;

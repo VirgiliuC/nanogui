@@ -143,7 +143,7 @@ void ColorWheel::draw(NVGcontext *ctx) {
 bool ColorWheel::mouseButtonEvent(const Vector2i &p, int button, bool down,
                                   int modifiers) {
     Widget::mouseButtonEvent(p, button, down, modifiers);
-    if (!mEnabled || button != GLFW_MOUSE_BUTTON_1)
+    if (!enabledStatus() || button != GLFW_MOUSE_BUTTON_1)
         return false;
 
     if (down) {
@@ -157,6 +157,8 @@ bool ColorWheel::mouseButtonEvent(const Vector2i &p, int button, bool down,
 
 bool ColorWheel::mouseDragEvent(const Vector2i &p, const Vector2i &,
                                 int, int) {
+    if(not enabledStatus())
+        return false;
     return adjustPosition(p, mDragRegion) != None;
 }
 

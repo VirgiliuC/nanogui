@@ -34,7 +34,7 @@ Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
 }
 
 void PopupButton::draw(NVGcontext* ctx) {
-    if (!mEnabled && mPushed)
+    if (!enabledStatus() && mPushed)
         mPushed = false;
 
     mPopup->setVisible(mPushed);
@@ -47,7 +47,7 @@ void PopupButton::draw(NVGcontext* ctx) {
 
         nvgFontSize(ctx, (mFontSize < 0 ? mTheme->mButtonFontSize : mFontSize) * 1.5f);
         nvgFontFace(ctx, "icons");
-        nvgFillColor(ctx, mEnabled ? textColor : mTheme->mDisabledTextColor);
+        nvgFillColor(ctx, enabledStatus() ? textColor : mTheme->mDisabledTextColor);
         nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
 
         float iw = nvgTextBounds(ctx, 0, 0, icon.data(), nullptr, nullptr);

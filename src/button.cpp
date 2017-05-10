@@ -52,7 +52,7 @@ bool Button::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
        button causes the parent window to be destructed */
     ref<Button> self = this;
 
-    if (button == GLFW_MOUSE_BUTTON_1 && mEnabled) {
+    if (button == GLFW_MOUSE_BUTTON_1 && enabledStatus()) {
         bool pushedBackup = mPushed;
         if (down) {
             if (mFlags & RadioButton) {
@@ -112,7 +112,7 @@ void Button::draw(NVGcontext *ctx) {
     if (mPushed) {
         gradTop = mTheme->mButtonGradientTopPushed;
         gradBot = mTheme->mButtonGradientBotPushed;
-    } else if (mMouseFocus && mEnabled) {
+    } else if (mMouseFocus && enabledStatus()) {
         gradTop = mTheme->mButtonGradientTopFocused;
         gradBot = mTheme->mButtonGradientBotFocused;
     }
@@ -129,7 +129,7 @@ void Button::draw(NVGcontext *ctx) {
             gradTop.a = gradBot.a = 0.8f;
         } else {
             double v = 1 - mBackgroundColor.w();
-            gradTop.a = gradBot.a = mEnabled ? v : v * .5f + .5f;
+            gradTop.a = gradBot.a = enabledStatus() ? v : v * .5f + .5f;
         }
     }
 
@@ -161,7 +161,7 @@ void Button::draw(NVGcontext *ctx) {
     Vector2f textPos(center.x() - tw * 0.5f, center.y() - 1);
     NVGcolor textColor =
         mTextColor.w() == 0 ? mTheme->mTextColor : mTextColor;
-    if (!mEnabled)
+    if (!enabledStatus())
         textColor = mTheme->mDisabledTextColor;
     //draw the icon, if any
     if (mIcon) {
@@ -202,7 +202,7 @@ void Button::draw(NVGcontext *ctx) {
             nvgText(ctx, iconPos.x(), iconPos.y()+1, icon.data(), nullptr);
         } else {
             NVGpaint imgPaint = nvgImagePattern(ctx,
-                    iconPos.x(), iconPos.y() - ih/2, iw, ih, 0, mIcon, mEnabled ? 0.5f : 0.25f);
+                    iconPos.x(), iconPos.y() - ih/2, iw, ih, 0, mIcon, enabledStatus() ? 0.5f : 0.25f);
 
             nvgFillPaint(ctx, imgPaint);
             nvgFill(ctx);

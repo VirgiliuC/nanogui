@@ -153,6 +153,17 @@ bool Widget::focusEvent(bool focused) {
     return false;
 }
 
+bool Widget::enableEvent() {
+    if(mEnableCallback)
+        setEnabled(mEnableCallback(mEnabled));
+    //propagate down the chain
+    for (auto it = mChildren.begin(); it != mChildren.end(); ++it) {
+           (*it)->enableEvent();
+    }
+    return mEnableCallback != nullptr;
+}
+
+
 bool Widget::keyboardEvent(int, int, int, int) {
     return false;
 }

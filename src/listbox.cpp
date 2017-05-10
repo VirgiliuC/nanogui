@@ -62,7 +62,7 @@ void ListBox::ListBoxItem::draw(NVGcontext *ctx){
     Vector2f textPos(mPos.x()+5, center.y() - 1);
     NVGcolor textColor =mTheme->mTextColor;///???
 //        mTextColor.w() == 0 ? mTheme->mTextColor : mTextColor;
-    if (!enabled())
+    if (!enabledStatus())
         textColor = mTheme->mDisabledTextColor;
     //draw the icon, if any
     if (mIcon) {
@@ -102,7 +102,7 @@ void ListBox::ListBoxItem::draw(NVGcontext *ctx){
             nvgText(ctx, iconPos.x(), iconPos.y()+1, icon.data(), nullptr);
         } else {
             NVGpaint imgPaint = nvgImagePattern(ctx,
-                    iconPos.x(), iconPos.y() - ih/2, iw, ih, 0, mIcon, enabled() ? 0.5f : 0.25f);
+                    iconPos.x(), iconPos.y() - ih/2, iw, ih, 0, mIcon, enabledStatus() ? 0.5f : 0.25f);
             nvgFillPaint(ctx, imgPaint);
             nvgFill(ctx);
         }

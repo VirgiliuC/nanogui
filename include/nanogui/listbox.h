@@ -74,7 +74,7 @@ protected:
         virtual bool load(Serializer &s) override;
 
     protected:
-        void    select() {mSelected = enabled() ? true : false;}
+        void    select() {mSelected = enabledStatus() ? true : false;}
         void    deselect() {mSelected = false;}
 
         virtual Vector2i preferredSize(NVGcontext *ctx) const;

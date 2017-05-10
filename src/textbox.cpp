@@ -132,7 +132,7 @@ void TextBox::draw(NVGcontext* ctx) {
         NVGpaint imgPaint = nvgImagePattern(
             ctx, mPos.x() + mSize.x() - xSpacing - unitWidth,
             drawPos.y() - unitHeight * 0.5f, unitWidth, unitHeight, 0,
-            mUnitsImage, mEnabled ? 0.7f : 0.35f);
+            mUnitsImage, enabledStatus() ? 0.7f : 0.35f);
         nvgBeginPath(ctx);
         nvgRect(ctx, mPos.x() + mSize.x() - xSpacing - unitWidth,
                 drawPos.y() - unitHeight * 0.5f, unitWidth, unitHeight);
@@ -141,7 +141,7 @@ void TextBox::draw(NVGcontext* ctx) {
         unitWidth += 2;
     } else if (!mUnits.empty()) {
         unitWidth = nvgTextBounds(ctx, 0, 0, mUnits.c_str(), nullptr, nullptr);
-        nvgFillColor(ctx, Color(255, mEnabled ? 64 : 32));
+        nvgFillColor(ctx, Color(255, enabledStatus() ? 64 : 32));
         nvgTextAlign(ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_MIDDLE);
         nvgText(ctx, mPos.x() + mSize.x() - xSpacing, drawPos.y(),
                 mUnits.c_str(), nullptr);
@@ -159,7 +159,7 @@ void TextBox::draw(NVGcontext* ctx) {
         bool spinning = mMouseDownPos.x() != -1;
         {
             bool hover = mMouseFocus && spinArea(mMousePos) == SpinArea::Top;
-            nvgFillColor(ctx, (mEnabled && (hover || spinning)) ? mTheme->mTextColor : mTheme->mDisabledTextColor);
+            nvgFillColor(ctx, (enabledStatus() && (hover || spinning)) ? mTheme->mTextColor : mTheme->mDisabledTextColor);
             auto icon = utf8(ENTYPO_ICON_CHEVRON_UP);
             nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
             Vector2f iconPos(mPos.x() + 4.f,
@@ -168,7 +168,7 @@ void TextBox::draw(NVGcontext* ctx) {
         }
         {
             bool hover = mMouseFocus && spinArea(mMousePos) == SpinArea::Bottom;
-            nvgFillColor(ctx, (mEnabled && (hover || spinning)) ? mTheme->mTextColor : mTheme->mDisabledTextColor);
+            nvgFillColor(ctx, (enabledStatus() && (hover || spinning)) ? mTheme->mTextColor : mTheme->mDisabledTextColor);
             auto icon = utf8(ENTYPO_ICON_CHEVRON_DOWN);
             nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
             Vector2f iconPos(mPos.x() + 4.f,
@@ -197,7 +197,7 @@ void TextBox::draw(NVGcontext* ctx) {
 
     nvgFontSize(ctx, fontSize());
     nvgFillColor(ctx,
-                 mEnabled ? mTheme->mTextColor : mTheme->mDisabledTextColor);
+                 enabledStatus() ? mTheme->mTextColor : mTheme->mDisabledTextColor);
 
     // clip visible text area
     float clipX = mPos.x() + xSpacing + spinArrowsWidth - 1.0f;
@@ -284,6 +284,8 @@ void TextBox::draw(NVGcontext* ctx) {
 bool TextBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
                                int modifiers) {
 
+    if(not enabledStatus())
+        return false;
     if (button == GLFW_MOUSE_BUTTON_1 && down && !mFocused) {
         if (!mSpinnable || spinArea(p) == SpinArea::None) /* not on scrolling arrows */
             requestFocus();
@@ -339,6 +341,9 @@ bool TextBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
 
 bool TextBox::mouseMotionEvent(const Vector2i &p, const Vector2i & /* rel */,
                                int /* button */, int /* modifiers */) {
+
+    if(not enabledStatus())
+        return false;
     mMousePos = p;
 
     if (!mEditable)
@@ -356,6 +361,9 @@ bool TextBox::mouseMotionEvent(const Vector2i &p, const Vector2i & /* rel */,
 
 bool TextBox::mouseDragEvent(const Vector2i &p, const Vector2i &/* rel */,
                              int /* button */, int /* modifiers */) {
+
+    if(not enabledStatus())
+        return false;
     mMousePos = p;
     mMouseDragPos = p;
 
@@ -366,6 +374,9 @@ bool TextBox::mouseDragEvent(const Vector2i &p, const Vector2i &/* rel */,
 }
 
 bool TextBox::focusEvent(bool focused) {
+
+    if(not enabledStatus())
+        return false;
     Widget::focusEvent(focused);
 
     std::string backup = mValue;
@@ -400,6 +411,9 @@ bool TextBox::focusEvent(bool focused) {
 }
 
 bool TextBox::keyboardEvent(int key, int /* scancode */, int action, int modifiers) {
+
+    if(not enabledStatus())
+        return false;
     if (mEditable && focused()) {
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
             if (key == GLFW_KEY_LEFT) {
@@ -479,6 +493,8 @@ bool TextBox::keyboardEvent(int key, int /* scancode */, int action, int modifie
 }
 
 bool TextBox::keyboardCharacterEvent(unsigned int codepoint) {
+    if(not enabledStatus())
+        return false;
     if (mEditable && focused()) {
         std::ostringstream convert;
         convert << (char) codepoint;
